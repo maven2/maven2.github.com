@@ -1,19 +1,21 @@
 #!/usr/bin/env ruby
 
+SITE = '/maven2.github.com'
 INDEX_HTML = 'index.html'
 
 FOOTER=<<END
 </ul>
+<p>Please visit <a href="http://github.com/maven2">http://github.com/maven2</a> if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
 </body>
 </html>
 END
 
 # MAIN
 
-ROOT, SCRIPT=File.split($0)
+ROOT=`pwd`.chomp
+SCRIPT=File.basename($0)
 
 def gentoc(base)
-  puts base
   files = []
   dirs = []
   Dir.foreach(base) { |path|
@@ -22,7 +24,7 @@ def gentoc(base)
       next if path[0, 1] == '.'
       dirs << path
     else
-      next if path == SCRIPT || path == INDEX_HTML
+      next if File.basename(path) == SCRIPT || File.basename(path) == INDEX_HTML
       files << path
     end
   }
@@ -31,17 +33,23 @@ def gentoc(base)
 end
 
 def write_index_html(base, dirs, files)
+  puts base
   index = File.join(base, INDEX_HTML)
-  title = File.basename(base)
+  l = base.length - ROOT.length - 1
+  title = base[-l, l] || SITE
+    
   File.open(index, 'w') { |o|
     o << <<END
 <html>
 <title>#{title}</title>
 <body>
-<h1>Maven2 GitHub repository</h1>
-<p>Please visit <a href="http://github.com/maven2">http://github.com/maven2</a> if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
+<h3>#{title}</h3>
 <ul>
 END
+    unless base == ROOT
+      parent = File.dirname(base).gsub(SITE, '') + '/'
+      o.puts "<li><a href=\"#{parent}\">..</a></li>"
+    end
     dirs.each { |dir|
       d = File.basename(dir)
       o.puts "<li><a href=\"#{d}/\">#{d}</a></li>"
