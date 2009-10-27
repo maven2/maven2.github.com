@@ -43,10 +43,13 @@ def write_index_html(base, dirs, files)
 <ul>
 END
     dirs.each { |dir|
-      b = File.basename(dir)
-      o.puts "<li><a href=\"#{b}/\">#{b}</a></li>"
+      d = File.basename(dir)
+      o.puts "<li><a href=\"#{d}/\">#{d}</a></li>"
     }
-    files.each { |file| o.puts "<li>#{File.basename(file)}</li>" }
+    files.each { |file|
+      f = File.basename(file)
+      o.puts "<li><a href=\"#{f}\">#{f}</a></li>"
+    }
     o << FOOTER
   }
 end
