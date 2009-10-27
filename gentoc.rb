@@ -36,7 +36,7 @@ def write_index_html(base, dirs, files)
   puts base
   index = File.join(base, INDEX_HTML)
   l = base.length - ROOT.length - 1
-  title = base[-l, l] || SITE
+  title = base[-l, l] || '/'
     
   File.open(index, 'w') { |o|
     o << <<END
