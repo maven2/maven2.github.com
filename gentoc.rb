@@ -60,7 +60,7 @@ def write_index_html(base, dirs, files)
 </head>
 <body>
 <h3>#{title}</h3>
-<ul>
+<ul class="dirlist">
 END
     unless base == ROOT
       parent = File.dirname(base).gsub(ROOT, '') + '/'
