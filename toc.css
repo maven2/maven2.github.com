@@ -6,21 +6,26 @@ ul.dirlist {
 
 ul.dirlist li.folder {
   background-image: url("/icons/folder.png");
+  background-repeat: no-repeat;
 }
 
 ul.dirlist li.file {
   background-image: url("/icons/page_white.png");
+  background-repeat: no-repeat;
 }
 
 ul.dirlist li.markup {
   background-image: url("/icons/page_white_code.png");
+  background-repeat: no-repeat;
 }
 
 ul.dirlist li.text {
   background-image: url("/icons/page_white_text.png");
+  background-repeat: no-repeat;
 }
 
 ul.dirlist li.zip {
   background-image: url("/icons/page_white_zip.png");
+  background-repeat: no-repeat;
 }
  
