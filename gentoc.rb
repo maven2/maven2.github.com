@@ -6,7 +6,7 @@ SCRIPT=File.join(ROOT, File.basename($0))
 SITE = '/maven2.github.com'
 
 INDEX_HTML = 'index.html'
-IGNORE = [ SCRIPT, File.join(ROOT, 'icons') ]
+IGNORE = [ SCRIPT, File.join(ROOT, 'icons'), File.join(ROOT, 'toc.css') ]
 
 EXT_MAP = {
   'java' => :text,
