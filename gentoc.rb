@@ -1,7 +1,33 @@
 #!/usr/bin/env ruby
 
+ROOT=`pwd`.chomp
+SCRIPT=File.join(ROOT, File.basename($0))
+
 SITE = '/maven2.github.com'
+
 INDEX_HTML = 'index.html'
+IGNORE = [ SCRIPT, File.join(ROOT, 'icons') ]
+
+ICONS = {
+  :folder => 'folder',
+  :unknown => 'page_white',
+  :markup => 'page_white_code',
+  :text => 'page_white_text',
+  :zip => 'page_white_zip'
+}
+ALTS = {
+  :txt => 'TXT',
+  :xml => 'XML',
+  :jar => 'JAR'
+}
+EXT_MAP = {
+  'java' => [ :text, :txt ],
+  'pom' => [ :markup, :xml ],
+  'xml' => [ :markup, :xml ],
+  'jar' => [ :zip, :jar ],
+  'sha1' => [ :text, :txt ],
+  'md5' => [ :text, :txt ]
+}
 
 FOOTER=<<END
 </ul>
@@ -12,19 +38,18 @@ END
 
 # MAIN
 
-ROOT=`pwd`.chomp
-SCRIPT=File.basename($0)
-
 def gentoc(base)
   files = []
   dirs = []
   Dir.foreach(base) { |path|
-    fq = File.join(base, path)
-    if FileTest.directory?(fq)
+    fqpath = File.join(base, path)
+    next if IGNORE.include? fqpath
+    
+    if FileTest.directory?(fqpath)
       next if path[0, 1] == '.'
       dirs << path
     else
-      next if File.basename(path) == SCRIPT || File.basename(path) == INDEX_HTML
+      next if File.basename(path) == INDEX_HTML
       files << path
     end
   }
@@ -33,7 +58,7 @@ def gentoc(base)
 end
 
 def write_index_html(base, dirs, files)
-  puts base
+  puts "base: #{base}"
   index = File.join(base, INDEX_HTML)
   l = base.length - ROOT.length - 1
   title = 'Index of ' + (base[-l, l] || '/')
@@ -47,16 +72,25 @@ def write_index_html(base, dirs, files)
 <ul>
 END
     unless base == ROOT
-      parent = File.dirname(base).gsub(SITE, '') + '/'
+      parent = File.dirname(base).gsub(ROOT, '') + '/'
       o.puts "<li><a href=\"#{parent}\">..</a></li>"
     end
     dirs.each { |dir|
       d = File.basename(dir)
-      o.puts "<li><a href=\"#{d}/\">#{d}</a></li>"
+      o.puts "<li><img src=\"/icons/folder.png\" alt=\"[DIR]\" /> <a href=\"#{d}/\">#{d}</a></li>"
     }
     files.each { |file|
       f = File.basename(file)
-      o.puts "<li><a href=\"#{f}\">#{f}</a></li>"
+      ext = File.extname(f)
+      ext[0, 1] = ''
+      if EXT_MAP.keys.include?(ext)
+        icon, alt = EXT_MAP[ext]
+        img = ICONS[icon]
+        text = ALTS[alt]
+        o.puts "<li><img src=\"/icons/#{img}.png\" alt=\"[#{text}]\" /> <a href=\"#{f}\">#{f}</a></li>"
+      else
+        o.puts "<li><a href=\"#{f}\">#{f}</a></li>"
+      end
     }
     o << FOOTER
   }
