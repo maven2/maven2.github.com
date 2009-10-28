@@ -1,0 +1,26 @@
+ul.dirlist {
+  list-style-type: none;
+  padding: 0;
+  margin-left: 1em;
+}
+
+ul.dirlist li.folder {
+  background-image: url("/icons/folder.png");
+}
+
+ul.dirlist li.file {
+  background-image: url("/icons/page_white.png");
+}
+
+ul.dirlist li.markup {
+  background-image: url("/icons/page_white_code.png");
+}
+
+ul.dirlist li.text {
+  background-image: url("/icons/page_white_text.png");
+}
+
+ul.dirlist li.zip {
+  background-image: url("/icons/page_white_zip.png");
+}
+ 

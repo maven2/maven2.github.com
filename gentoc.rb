@@ -8,25 +8,13 @@ SITE = '/maven2.github.com'
 INDEX_HTML = 'index.html'
 IGNORE = [ SCRIPT, File.join(ROOT, 'icons') ]
 
-ICONS = {
-  :folder => 'folder',
-  :unknown => 'page_white',
-  :markup => 'page_white_code',
-  :text => 'page_white_text',
-  :zip => 'page_white_zip'
-}
-ALTS = {
-  :txt => 'TXT',
-  :xml => 'XML',
-  :jar => 'JAR'
-}
 EXT_MAP = {
-  'java' => [ :text, :txt ],
-  'pom' => [ :markup, :xml ],
-  'xml' => [ :markup, :xml ],
-  'jar' => [ :zip, :jar ],
-  'sha1' => [ :text, :txt ],
-  'md5' => [ :text, :txt ]
+  'java' => :text,
+  'pom' => :markup,
+  'xml' => :markup,
+  'jar' => :zip,
+  'sha1' => :text,
+  'md5' => :text
 }
 
 FOOTER=<<END
@@ -66,7 +54,10 @@ def write_index_html(base, dirs, files)
   File.open(index, 'w') { |o|
     o << <<END
 <html>
+<head>
 <title>#{title}</title>
+<link rel="stylesheet" href="/toc.css" />
+</head>
 <body>
 <h3>#{title}</h3>
 <ul>
@@ -77,17 +68,15 @@ END
     end
     dirs.each { |dir|
       d = File.basename(dir)
-      o.puts "<li><img src=\"/icons/folder.png\" alt=\"[DIR]\" /> <a href=\"#{d}/\">#{d}</a></li>"
+      o.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
     }
     files.each { |file|
       f = File.basename(file)
       ext = File.extname(f)
       ext[0, 1] = ''
-      if EXT_MAP.keys.include?(ext)
-        icon, alt = EXT_MAP[ext]
-        img = ICONS[icon]
-        text = ALTS[alt]
-        o.puts "<li><img src=\"/icons/#{img}.png\" alt=\"[#{text}]\" /> <a href=\"#{f}\">#{f}</a></li>"
+      cl = EXT_MAP[ext]
+      if cl
+        o.puts "<li class=\"#{cl}\"><a href=\"#{f}\">#{f}</a></li>"
       else
         o.puts "<li><a href=\"#{f}\">#{f}</a></li>"
       end
