@@ -6,7 +6,8 @@ ul.dirlist {
 
 ul.dirlist li {
   background-repeat: no-repeat;
-  margin-left: 1em;
+  background-position: 0 0.2em;
+  padding-left: 1.2em;
 }
 
 ul.dirlist li.folder {
