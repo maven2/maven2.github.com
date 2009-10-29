@@ -53,7 +53,6 @@ END
 # MAIN
 
 def gentoc(parent)
-  puts "parent: '#{parent}'"
   files = []
   dirs = []
   Dir.glob(parent + '/*') { |path|
