@@ -69,10 +69,9 @@ def gentoc(base)
 end
 
 def write_index_html(base, dirs, files)
-  puts "base: #{base}"
   index = File.join(base, INDEX_HTML)
   l = base.length - ROOT.length - 1
-  title = 'Index of ' + (base[-l, l] || '/')
+  title = 'Index of /' + (base[-l, l] || '')
     
   File.open(index, 'w') { |o|
     o << <<END
@@ -85,12 +84,12 @@ def write_index_html(base, dirs, files)
 </head>
 <body>
 <h3>#{title}</h3>
-<ul class="dirlist">
 END
     unless base == ROOT
       parent = File.dirname(base).gsub(ROOT, '') + '/'
-      o.puts "<li><a href=\"#{parent}\">..</a></li>"
+      o.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
     end
+    o.puts '<ul class="dirlist">'
     dirs.each { |dir|
       d = File.basename(dir)
       o.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
@@ -108,6 +107,7 @@ END
     }
     o << FOOTER
   }
+  puts "Generated #{index}"
 end
 
 gentoc(ROOT)

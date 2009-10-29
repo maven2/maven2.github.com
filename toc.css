@@ -1,3 +1,10 @@
+a.folder_up {
+  padding-left: 1.2em;
+  background-image: url("/icons/folder_up.png");
+  background-repeat: no-repeat;
+  background-position: 1px 2px;
+}
+
 ul.dirlist {
   list-style-type: none;
   padding: 0;
@@ -5,8 +12,9 @@ ul.dirlist {
 }
 
 ul.dirlist li {
+  background-image: url("/icons/page_white.png");
   background-repeat: no-repeat;
-  background-position: 1px 0.2em;
+  background-position: 1px 2px;
   padding-left: 1.2em;
 }
 
@@ -14,12 +22,8 @@ ul.dirlist li.folder {
   background-image: url("/icons/folder.png");
 }
 
-ul.dirlist li.file {
-  background-image: url("/icons/page_white.png");
-}
-
 ul.dirlist li.markup {
-  background-position: 0 0.2em;
+  background-position: 0 2px;
   background-image: url("/icons/page_white_code.png");
 }
 
