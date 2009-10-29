@@ -6,7 +6,7 @@ ul.dirlist {
 
 ul.dirlist li {
   background-repeat: no-repeat;
-  background-position: 0 0.2em;
+  background-position: 1px 0.2em;
   padding-left: 1.2em;
 }
 
@@ -19,6 +19,7 @@ ul.dirlist li.file {
 }
 
 ul.dirlist li.markup {
+  background-position: 0 0.2em;
   background-image: url("/icons/page_white_code.png");
 }
 
