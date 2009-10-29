@@ -23,9 +23,10 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-require 'time'
+PWD=Dir.pwd
+Dir.chdir(File.dirname($0))
 
-ROOT=`pwd`.chomp
+ROOT=Dir.pwd
 SCRIPT=File.join(ROOT, File.basename($0))
 
 SITE = '/maven2.github.com'
@@ -45,7 +46,6 @@ EXT_MAP = {
 FOOTER=<<END
 </ul>
 <p>Please visit <a href="http://github.com/maven2">http://github.com/maven2</a> if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
-<p>Generated #{Time.new.utc.httpdate}</p>
 </body>
 </html>
 END
