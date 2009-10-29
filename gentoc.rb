@@ -43,14 +43,6 @@ EXT_MAP = {
   'md5' => :text
 }
 
-FOOTER=<<END
-</ul>
-<p>Please visit <a href="http://github.com/maven2/maven2.github.com">http://github.com/maven2</a>
-if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
-</body>
-</html>
-END
-
 class String
   def unfix(prefix, empty='')
     if prefix.length >= length
@@ -82,11 +74,25 @@ def gentoc(parent)
 end
 
 def write_index_html(parent, dirs, files)
-  index = File.join(parent, INDEX_HTML)
-  title = 'Index of ' + parent.unfix(ROOT, '/')
+  index_html = File.join(parent, INDEX_HTML)
     
-  File.open(index, 'w') { |o|
-    o << <<END
+  File.open(index_html, 'w') { |html|
+    generate(html, parent, dirs, files)
+  }
+  puts "Generated #{index_html}"
+end
+
+FOOTER=<<END
+</ul>
+<p>Please visit <a href="http://github.com/maven2/maven2.github.com">http://github.com/maven2</a>
+if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
+</body>
+</html>
+END
+
+def generate(html, parent, dirs, files)
+  title = 'Index of ' + parent.unfix(ROOT, '/')
+  header = <<END
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -97,29 +103,29 @@ def write_index_html(parent, dirs, files)
 <body>
 <h3>#{title}</h3>
 END
-    unless parent == ROOT
-      parent = File.dirname(parent).unfix(ROOT) + '/'
-      o.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
-    end
-    o.puts '<ul class="dirlist">'
-    dirs.each { |dir|
-      d = File.basename(dir)
-      o.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
-    }
-    files.each { |file|
-      f = File.basename(file)
-      ext = File.extname(f)
-      ext[0, 1] = ''
-      cl = EXT_MAP[ext]
-      if cl
-        o.puts "<li class=\"#{cl}\"><a href=\"#{f}\">#{f}</a></li>"
-      else
-        o.puts "<li><a href=\"#{f}\">#{f}</a></li>"
-      end
-    }
-    o << FOOTER
+
+  html << header
+  unless parent == ROOT
+    parent = File.dirname(parent).unfix(ROOT) + '/'
+    html.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
+  end
+  html.puts '<ul class="dirlist">'
+  dirs.each { |dir|
+    d = File.basename(dir)
+    html.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
   }
-  puts "Generated #{index}"
+  files.each { |file|
+    f = File.basename(file)
+    ext = File.extname(f)
+    ext[0, 1] = ''
+    cl = EXT_MAP[ext]
+    if cl
+      html.puts "<li class=\"#{cl}\"><a href=\"#{f}\">#{f}</a></li>"
+    else
+      html.puts "<li><a href=\"#{f}\">#{f}</a></li>"
+    end
+  }
+  html << FOOTER
 end
 
 gentoc(ROOT)
