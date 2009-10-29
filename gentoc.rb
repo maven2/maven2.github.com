@@ -65,7 +65,7 @@ end
 def gentoc(parent)
   files = []
   dirs = []
-  Dir.glob(parent + '/*') { |path|
+  Dir.glob(File.join(parent, '*')) { |path|
     next if IGNORE.include?(path)
     
     if FileTest.directory?(path)
