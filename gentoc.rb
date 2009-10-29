@@ -94,8 +94,8 @@ def write_index_html(parent, dirs, files)
 <h3>#{title}</h3>
 END
     unless parent == ROOT
-      parent = File.dirname(parent).unfix(ROOT)
-      o.puts "<p><a href=\"#{parent}/\" class=\"folder_up\">Up to higher level directory</a></p>"
+      parent = File.dirname(parent).unfix(ROOT) + '/'
+      o.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
     end
     o.puts '<ul class="dirlist">'
     dirs.each { |dir|
