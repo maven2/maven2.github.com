@@ -60,7 +60,8 @@ def gentoc(base)
       next if path[0, 1] == '.'
       dirs << path
     else
-      next if File.basename(path) == INDEX_HTML
+      basename = File.basename(path)
+      next if basename == INDEX_HTML || basename[0,1] == '.'
       files << path
     end
   }
