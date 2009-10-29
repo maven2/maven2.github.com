@@ -51,8 +51,12 @@ FOOTER=<<END
 END
 
 class String
-  def unfix(prefix)
-    slice(prefix.length, length)
+  def unfix(prefix, empty='')
+    if prefix.length >= length
+      empty
+    else
+      slice(prefix.length, length)
+    end
   end
 end
 
@@ -78,8 +82,7 @@ end
 
 def write_index_html(parent, dirs, files)
   index = File.join(parent, INDEX_HTML)
-  l = parent.length - ROOT.length - 1
-  title = 'Index of /' + (parent[-l, l] || '')
+  title = 'Index of ' + parent.unfix(ROOT, '/')
     
   File.open(index, 'w') { |o|
     o << <<END
