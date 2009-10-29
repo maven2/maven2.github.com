@@ -45,7 +45,8 @@ EXT_MAP = {
 
 FOOTER=<<END
 </ul>
-<p>Please visit <a href="http://github.com/maven2">http://github.com/maven2</a> if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
+<p>Please visit <a href="http://github.com/maven2/maven2.github.com">http://github.com/maven2</a>
+if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
 </body>
 </html>
 END
