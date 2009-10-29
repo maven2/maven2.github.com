@@ -55,29 +55,29 @@ end
 
 # MAIN
 
-def gentoc(parent)
+def gentoc(dir)
   files = []
-  dirs = []
-  Dir.glob(File.join(parent, '*')) { |path|
+  subdirs = []
+  Dir.glob(File.join(dir, '*')) { |path|
     next if IGNORE.include?(path)
     
     if FileTest.directory?(path)
-      dirs << path
+      subdirs << path
     else
       filename = File.basename(path)
       next if filename == INDEX_HTML
       files << filename
     end
   }
-  dirs.each { |dir| gentoc(dir) }
-  write_index_html(parent, dirs, files)
+  subdirs.each { |subdir| gentoc(subdir) }
+  write_index_html(dir, subdirs, files)
 end
 
-def write_index_html(parent, dirs, files)
-  index_html = File.join(parent, INDEX_HTML)
+def write_index_html(dir, subdirs, files)
+  index_html = File.join(dir, INDEX_HTML)
     
   File.open(index_html, 'w') { |html|
-    generate(html, parent, dirs, files)
+    generate(html, dir, subdirs, files)
   }
   puts "Generated #{index_html}"
 end
@@ -90,8 +90,8 @@ if you would like to publish your GitHub-hosted Maven 2 project on this reposito
 </html>
 END
 
-def generate(html, parent, dirs, files)
-  title = 'Index of ' + parent.unfix(ROOT, '/')
+def generate(html, dir, subdirs, files)
+  title = 'Index of ' + dir.unfix(ROOT, '/')
   header = <<END
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -105,19 +105,18 @@ def generate(html, parent, dirs, files)
 END
 
   html << header
-  unless parent == ROOT
-    parent = File.dirname(parent).unfix(ROOT) + '/'
-    html.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
+  unless dir == ROOT
+    dir = File.dirname(dir).unfix(ROOT) + '/'
+    html.puts "<p><a href=\"#{dir}\" class=\"folder_up\">Up to higher level directory</a></p>"
   end
   html.puts '<ul class="dirlist">'
-  dirs.each { |dir|
-    d = File.basename(dir)
+  subdirs.each { |subdir|
+    d = File.basename(subdir)
     html.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
   }
   files.each { |file|
     f = File.basename(file)
-    ext = File.extname(f)
-    ext[0, 1] = ''
+    ext = File.extname(f).unfix('.')
     cl = EXT_MAP[ext]
     if cl
       html.puts "<li class=\"#{cl}\"><a href=\"#{f}\">#{f}</a></li>"
