@@ -55,15 +55,14 @@ END
 def gentoc(parent)
   files = []
   dirs = []
-  Dir.foreach(parent) { |filename|
-    path = File.join(parent, filename)
-    
-    next if IGNORE.include?(path) || filename[0, 1] == '.'
+  Dir.glob(parent + '/*') { |path|
+    next if IGNORE.include?(path)
     
     if FileTest.directory?(path)
       dirs << path
     else
-      next if File.basename(filename) == INDEX_HTML
+      filename = File.basename(path)
+      next if filename == INDEX_HTML
       files << filename
     end
   }
