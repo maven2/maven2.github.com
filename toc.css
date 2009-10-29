@@ -1,3 +1,8 @@
+:root {
+  font-family: "Optima", "Trebuchet MS", sans-serif;
+  font-size: 12pt
+}
+
 a.folder_up {
   padding-left: 1.2em;
   background-image: url("/icons/folder_up.png");

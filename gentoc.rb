@@ -43,36 +43,36 @@ EXT_MAP = {
 FOOTER=<<END
 </ul>
 <p>Please visit <a href="http://github.com/maven2">http://github.com/maven2</a> if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
+<p>Generated #{Time.new}</p>
 </body>
 </html>
 END
 
 # MAIN
 
-def gentoc(base)
+def gentoc(parent)
   files = []
   dirs = []
-  Dir.foreach(base) { |path|
-    fqpath = File.join(base, path)
-    next if IGNORE.include? fqpath
+  Dir.foreach(parent) { |filename|
+    path = File.join(parent, filename)
     
-    if FileTest.directory?(fqpath)
-      next if path[0, 1] == '.'
+    next if IGNORE.include?(path) || filename[0, 1] == '.'
+    
+    if FileTest.directory?(path)
       dirs << path
     else
-      basename = File.basename(path)
-      next if basename == INDEX_HTML || basename[0,1] == '.'
-      files << path
+      next if File.basename(filename) == INDEX_HTML
+      files << filename
     end
   }
-  dirs.each { |dir| gentoc(File.join(base, dir)) }
-  write_index_html(base, dirs, files)
+  dirs.each { |dir| gentoc(dir) }
+  write_index_html(parent, dirs, files)
 end
 
-def write_index_html(base, dirs, files)
-  index = File.join(base, INDEX_HTML)
-  l = base.length - ROOT.length - 1
-  title = 'Index of /' + (base[-l, l] || '')
+def write_index_html(parent, dirs, files)
+  index = File.join(parent, INDEX_HTML)
+  l = parent.length - ROOT.length - 1
+  title = 'Index of /' + (parent[-l, l] || '')
     
   File.open(index, 'w') { |o|
     o << <<END
@@ -86,8 +86,8 @@ def write_index_html(base, dirs, files)
 <body>
 <h3>#{title}</h3>
 END
-    unless base == ROOT
-      parent = File.dirname(base).gsub(ROOT, '') + '/'
+    unless parent == ROOT
+      parent = File.dirname(parent).gsub(ROOT, '') + '/'
       o.puts "<p><a href=\"#{parent}\" class=\"folder_up\">Up to higher level directory</a></p>"
     end
     o.puts '<ul class="dirlist">'
