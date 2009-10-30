@@ -52,35 +52,6 @@ class String
   end
 end
 
-# MAIN
-
-def gentoc(dir)
-  filenames = []
-  subdirs = []
-  Dir.glob(File.join(dir, '*')) { |path|
-    next if IGNORE.include?(path)
-    
-    if FileTest.directory?(path)
-      subdirs << path
-    else
-      filename = File.basename(path)
-      next if filename == INDEX_HTML
-      filenames << filename
-    end
-  }
-  subdirs.each { |subdir| gentoc(subdir) }
-  write_index_html(dir, subdirs, filenames)
-end
-
-def write_index_html(dir, subdirs, filenames)
-  index_html = File.join(dir, INDEX_HTML)
-    
-  File.open(index_html, 'w') { |html|
-    generate(html, dir, subdirs, filenames)
-  }
-  puts "Generated #{index_html}"
-end
-
 FOOTER = <<END
 </ul>
 <p>Please visit <a href="http://github.com/maven2/maven2.github.com">http://github.com/maven2</a>
@@ -89,9 +60,48 @@ if you would like to publish your GitHub-hosted Maven 2 project on this reposito
 </html>
 END
 
-def generate(html, dir, subdirs, filenames)
-  title = 'Index of ' + dir.unfix(ROOT, '/')
-  header = <<END
+# Toc represents the 'table of contents' of a directory
+class Toc < Struct.new(:dir, :subdirs, :filenames)
+
+  # Construct a Toc for the given directory path.
+  # Initializes scans the target directory to build the
+  # list of child directories and (relative) filenames.
+  def initialize(dir)
+    super(dir, [], [])
+    scan
+  end
+  
+  # Scan the target directory for child directories
+  # and filenames.
+  def scan
+    Dir.glob(File.join(dir, '*')) { |path|
+      next if IGNORE.include?(path)
+      
+      if FileTest.directory?(path)
+        subdirs << path
+      else
+        filename = File.basename(path)
+        next if filename == INDEX_HTML
+        filenames << filename
+      end
+    }
+  end
+
+  # Writes out the table of contents as an +index.html+ file
+  # in the target directory.
+  def write_index_html
+    index_html = File.join(dir, INDEX_HTML)
+      
+    File.open(index_html, 'w') { |html|
+      generate(html)
+    }
+    puts "Generated #{index_html}"
+  end
+
+  # The actual method that generaters the contents of +index.html+
+  def generate(html)
+    title = 'Index of ' + dir.unfix(ROOT, '/')
+    header = <<END
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -102,23 +112,32 @@ def generate(html, dir, subdirs, filenames)
 <body>
 <h3>#{title}</h3>
 END
-
-  html << header
-  unless dir == ROOT
-    dir = File.dirname(dir).unfix(ROOT) + '/'
-    html.puts "<p><a href=\"#{dir}\" class=\"folder_up\">Up to higher level directory</a></p>"
+  
+    html << header
+    unless dir == ROOT
+      d = File.dirname(dir).unfix(ROOT) + '/'
+      html.puts "<p><a href=\"#{d}\" class=\"folder_up\">Up to higher level directory</a></p>"
+    end
+    html.puts '<ul class="dirlist">'
+    subdirs.each { |subdir|
+      d = File.basename(subdir)
+      html.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
+    }
+    filenames.each { |filename|
+      ext = File.extname(filename).unfix('.')
+      cl = " class=\"#{EXT_MAP[ext]}\"" if EXT_MAP[ext]
+      html.puts "<li#{cl if cl}><a href=\"#{filename}\">#{filename}</a></li>"
+    }
+    html << FOOTER
   end
-  html.puts '<ul class="dirlist">'
-  subdirs.each { |subdir|
-    d = File.basename(subdir)
-    html.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
-  }
-  filenames.each { |filename|
-    ext = File.extname(filename).unfix('.')
-    cl = " class=\"#{EXT_MAP[ext]}\"" if EXT_MAP[ext]
-    html.puts "<li#{cl if cl}><a href=\"#{filename}\">#{filename}</a></li>"
-  }
-  html << FOOTER
+end
+
+# MAIN
+
+def gentoc(dir)
+  toc = Toc.new(dir)
+  toc.subdirs.each { |subdir| gentoc(subdir) }
+  toc.write_index_html
 end
 
 gentoc(ROOT)
