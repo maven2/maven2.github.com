@@ -115,10 +115,8 @@ END
   }
   filenames.each { |filename|
     ext = File.extname(filename).unfix('.')
-    cl = EXT_MAP[ext]
-    html << '<li'
-    html << " class=\"#{cl}\"" if cl
-    html.puts "><a href=\"#{filename}\">#{filename}</a></li>"
+    cl = " class=\"#{EXT_MAP[ext]}\"" if EXT_MAP[ext]
+    html.puts "<li#{cl if cl}><a href=\"#{filename}\">#{filename}</a></li>"
   }
   html << FOOTER
 end
