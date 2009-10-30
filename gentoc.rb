@@ -55,7 +55,7 @@ end
 # MAIN
 
 def gentoc(dir)
-  files = []
+  filenames = []
   subdirs = []
   Dir.glob(File.join(dir, '*')) { |path|
     next if IGNORE.include?(path)
@@ -65,23 +65,23 @@ def gentoc(dir)
     else
       filename = File.basename(path)
       next if filename == INDEX_HTML
-      files << filename
+      filenames << filename
     end
   }
   subdirs.each { |subdir| gentoc(subdir) }
-  write_index_html(dir, subdirs, files)
+  write_index_html(dir, subdirs, filenames)
 end
 
-def write_index_html(dir, subdirs, files)
+def write_index_html(dir, subdirs, filenames)
   index_html = File.join(dir, INDEX_HTML)
     
   File.open(index_html, 'w') { |html|
-    generate(html, dir, subdirs, files)
+    generate(html, dir, subdirs, filenames)
   }
   puts "Generated #{index_html}"
 end
 
-FOOTER=<<END
+FOOTER = <<END
 </ul>
 <p>Please visit <a href="http://github.com/maven2/maven2.github.com">http://github.com/maven2</a>
 if you would like to publish your GitHub-hosted Maven 2 project on this repository.</p>
@@ -89,7 +89,7 @@ if you would like to publish your GitHub-hosted Maven 2 project on this reposito
 </html>
 END
 
-def generate(html, dir, subdirs, files)
+def generate(html, dir, subdirs, filenames)
   title = 'Index of ' + dir.unfix(ROOT, '/')
   header = <<END
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -113,15 +113,14 @@ END
     d = File.basename(subdir)
     html.puts "<li class=\"folder\"><a href=\"#{d}/\">#{d}</a></li>"
   }
-  files.each { |file|
-    f = File.basename(file)
-    ext = File.extname(f).unfix('.')
+  filenames.each { |filename|
+    ext = File.extname(filename).unfix('.')
     cl = EXT_MAP[ext]
+    html << '<li'
     if cl
-      html.puts "<li class=\"#{cl}\"><a href=\"#{f}\">#{f}</a></li>"
-    else
-      html.puts "<li><a href=\"#{f}\">#{f}</a></li>"
+      html << " class=\"#{cl}\""
     end
+    html.puts "><a href=\"#{filename}\">#{filename}</a></li>"
   }
   html << FOOTER
 end
