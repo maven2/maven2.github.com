@@ -64,7 +64,7 @@ END
 class Toc < Struct.new(:dir, :subdirs, :filenames)
 
   # Construct a Toc for the given directory path.
-  # Initializes scans the target directory to build the
+  # Initializes and scans the target directory to build the
   # list of child directories and (relative) filenames.
   def initialize(dir)
     super(dir, [], [])
