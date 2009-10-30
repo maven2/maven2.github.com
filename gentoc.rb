@@ -132,12 +132,11 @@ END
   end
 end
 
-# MAIN
-
-def gentoc(dir)
+# 'Visitor' pattern
+def visit(dir)
   toc = Toc.new(dir)
-  toc.subdirs.each { |subdir| gentoc(subdir) }
+  toc.subdirs.each { |subdir| visit(subdir) }
   toc.write_index_html
 end
 
-gentoc(ROOT)
+visit(ROOT)
