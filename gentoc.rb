@@ -98,7 +98,7 @@ class Toc < Struct.new(:dir, :subdirs, :filenames)
     puts "Generated #{index_html}"
   end
 
-  # The actual method that generaters the contents of +index.html+
+  # The actual method that generates the contents of +index.html+
   def generate(html)
     title = 'Index of ' + dir.unfix(ROOT, '/')
     header = <<END
