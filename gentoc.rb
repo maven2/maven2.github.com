@@ -117,9 +117,7 @@ END
     ext = File.extname(filename).unfix('.')
     cl = EXT_MAP[ext]
     html << '<li'
-    if cl
-      html << " class=\"#{cl}\""
-    end
+    html << " class=\"#{cl}\"" if cl
     html.puts "><a href=\"#{filename}\">#{filename}</a></li>"
   }
   html << FOOTER
