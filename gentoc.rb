@@ -29,8 +29,6 @@ Dir.chdir(File.dirname($0))
 ROOT=Dir.pwd
 SCRIPT=File.join(ROOT, File.basename($0))
 
-SITE = '/maven2.github.com'
-
 INDEX_HTML = 'index.html'
 IGNORE = [ SCRIPT, File.join(ROOT, 'icons'), File.join(ROOT, 'toc.css') ]
 
