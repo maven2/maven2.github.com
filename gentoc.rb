@@ -33,6 +33,7 @@ INDEX_HTML = 'index.html'
 IGNORE = [ SCRIPT, File.join(ROOT, 'icons'), File.join(ROOT, 'toc.css') ]
 
 EXT_MAP = {
+  'rb' => :text,
   'java' => :text,
   'pom' => :markup,
   'xml' => :markup,
