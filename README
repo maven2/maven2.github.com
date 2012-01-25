@@ -1,0 +1,6 @@
+    <repositories>
+        <repository>
+            <id>maven2.github.com</id>
+            <url>http://maven2.github.com</url>
+        </repository>
+    </repositories>
